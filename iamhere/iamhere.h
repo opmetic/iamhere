@@ -1,32 +1,28 @@
-
-// iamhere.h : PROJECT_NAME 应用程序的主头文件
-//
-
 #pragma once
 
-#ifndef __AFXWIN_H__
-	#error "在包含此文件之前包含“stdafx.h”以生成 PCH 文件"
+#define WIN32_LEAN_AND_MEAN	
+#define _CRT_SECURE_NO_DEPRECATE
+
+#include <windows.h>
+#include <objbase.h>
+#include <shellapi.h>
+
+#include ".\include\DuiLib\UIlib.h"
+
+using namespace DuiLib;
+
+#ifdef _DEBUG
+#   ifdef _UNICODE
+#       pragma comment(lib, ".\\libs\\DuiLib_ud.lib")
+#   else
+#       pragma comment(lib, ".\\libs\\DuiLib_d.lib")
+#   endif
+#else
+#   ifdef _UNICODE
+#       pragma comment(lib, ".\\libs\\DuiLib_u.lib")
+#   else
+#       pragma comment(lib, ".\\libs\\DuiLib.lib")
+#   endif
 #endif
 
-#include "resource.h"		// 主符号
-
-
-// CiamhereApp:
-// 有关此类的实现，请参阅 iamhere.cpp
-//
-
-class CiamhereApp : public CWinApp
-{
-public:
-	CiamhereApp();
-
-// 重写
-public:
-	virtual BOOL InitInstance();
-
-// 实现
-
-	DECLARE_MESSAGE_MAP()
-};
-
-extern CiamhereApp theApp;
+#define WM_SHOWTASK WM_USER + 779

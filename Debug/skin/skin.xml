@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window mininfo="540,450" size="540,450 " sizebox="5,5,5,5" caption="0,0,0,450" bktrans="true" alpha="245" roundcorner="5,5" >
+  <Font name="幼圆" size="22" bold="false" />
+  <Font name="宋体" size="16" bold="false" />
+  <Font name="宋体" size="12" />
+  <Font name="宋体" size="12" bold="false" />
+  <Font name="宋体" size="12" bold="true"/>
+  <Font name="宋体" size="12" />
+  <Font name="幼圆" size="16" default="true" />
+  <VerticalLayout bkcolor="#FFFFFFFF" inset="5,5,5,5" height="450" bkimage="file='iamhere.png'" borderround="5,5">
+    <HorizontalLayout height="25" inset="0,0,0,0">  <!-- 头部关系按钮 -->
+      <Button name="closeBtn" float="true" pos="505,0,530,25" bordersize="0" bkimage="file='closebtn.png'" hotimage="file='closebtn2.png'"/>
+    </HorizontalLayout>
+    <HorizontalLayout height="50" inset="0,0,0,5"> <!-- 查找栏 -->
+      <Edit padding="0,0,0,0" name="rememberKey" width="455" text="测试编辑框"  borderround="2,2" font="0" bkcolor="#00ffffff" bkcolor2="#ffffffff" bkcolor3="#00ffffff" nativebkcolor="#ffcccc99"/>
+      <Button name="searchBtn" height="45" width="45" padding="5,0,0,0" bordersize="0" bkimage="file='search.png'" hotimage="file='search2.png'"/>
+    </HorizontalLayout>
+    <HorizontalLayout height="345" inset="0,0,0,0"> <!-- 主区 -->
+      <RichEdit name="rememberValue" inset="5,5,0,5" bordercolor="#FF0000" bordersize="0" borderround="2,2" transparent="true" bkcolor="#30ffffff" bkcolor2="#00ffffff" bkcolor3="#30ffffff" font="1" multiline="true" vscrollbar="true" autovscroll="true" enabled="true" rich="true" readonly="false" text="测试richedit">
+      </RichEdit>
+    </HorizontalLayout>
+    <HorizontalLayout height="20" inset="0,5,0,0">
+      <Text text="总收录条数:" font="3"></Text>
+      <Text name="info" text="100" font="4"></Text>
+    </HorizontalLayout>
+  </VerticalLayout>
+</Window>

@@ -1,0 +1,68 @@
+WM_KEYDOWN Notification
+
+当一个非系统键被按下时该消息发送给具有键盘焦点的窗口。非系统键即不与ALT联用的情况。
+
+语法
+
+WM_KEYDOWN
+
+WPARAM wParam
+LPARAM lParam;
+
+参数
+
+wParam
+
+指定非系统键的虚拟键码。
+
+lParam
+
+指定重复次数，扫描码，扩展键标识符，上下文代码，前一键状态标识符，以及转换状态标识符。它们如下所示：
+
+0-15
+
+指定当前消息重复的次数。该值代表按键敲击的次数，就如同用户一直按下键盘按键一样。如果按键足够长，会发送多个消息。然而，重复次数不进行累加。
+
+16-23
+
+指定扫描码。该值取决于OEM。
+
+24
+
+指定键是否为扩展键，就如同101或102键盘内的右手的ATL和CTRL键。如果是一个扩展键，则该值是1，否则，它是0.
+
+25-28
+
+保留，未使用。
+
+29
+
+指定上下文代码，对于WM_KEYDOWN消息，该值总是0.
+
+30
+
+指定之前的键状态。如果在消息发送之前，键被按下，则该值是1，否则该值是0.
+
+31
+
+指定转换状态。对于WM_KEYDOWN消息，该值总是0.
+
+返回值
+
+应用程序如果处理了改消息，则返回值是0.
+
+备注
+
+如果F10被按下，DefWindowProc函数发送一个内部标识符。当DefWindowProc函数接收WM_KEYUP消息时，函数检查内部标识符是否被设置，如果设置的话，将发送WM_SYSCOMMAND消息给顶层窗口。消息的WM_SYSCOMMAND参数会被设置为SC_KEYMENU。
+
+由于自动重复的特性，在WM_KEYUP消息发送之前也许会有多个WM_KEYDOWN消息发送。之前的键状态（30）可以被用来判断WM_KEYDOWN消息是第一次按下，还是重复过的按下。
+
+对于增强型101或102键盘，extended keys are the right ALT and CTRL keys on the main section of the keyboard; the INS, DEL, HOME, END, PAGE UP, PAGE DOWN, and arrow keys in the clusters to the left of the numeric keypad; and the divide (/) and ENTER keys in the numeric keypad. Other keyboards may support the extended-key bit in the lParam parameter.
+
+Windows 2000/XP: 应用程序必须传递wParam参数给TranslateMesage而不需要转换它自身。
+
+消息要求
+
+Minimum DLL Version    None
+Header    Declared in Winuser.h, include Windows.h
+Minimum operating systems    Windows 95, Windows NT 3.1
