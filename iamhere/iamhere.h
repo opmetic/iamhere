@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __IAMHERE_H__
+#define __IAMHERE_H__
+
 
 #define WIN32_LEAN_AND_MEAN	
 #define _CRT_SECURE_NO_DEPRECATE
@@ -26,3 +28,17 @@ using namespace DuiLib;
 #endif
 
 #define WM_SHOWTASK WM_USER + 779
+
+#include "IamHereWindowWnd.h"
+
+
+/*
+class CIamHereProxy 
+{
+public:
+	CIamHereWindowWnd * pFrame;
+};
+
+CIamHereProxy IamHere;
+*/
+#endif // __IAMHERE_H__

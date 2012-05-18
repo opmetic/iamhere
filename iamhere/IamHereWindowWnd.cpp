@@ -4,10 +4,24 @@ CIamHereWindowWnd::CIamHereWindowWnd(void)
 {
 	//构造函数
 	m_className = _T("CIamHereWindowWnd");
+	m_size.cx = 540;
+	m_size.cy = 450;
 }
 
 CIamHereWindowWnd::~CIamHereWindowWnd(void)
 {
+}
+
+void CIamHereWindowWnd::Init()
+{
+	//托盘
+	InitNotify();
+	InitHotKey();
+
+	//初始化指针
+	pControlKey = static_cast<CRichEditUI*>(m_paintManager.FindControl(_T("rememberKey")));
+	pControlValue = static_cast<CRichEditUI*>(m_paintManager.FindControl(_T("rememberValue")));
+	pControlKey->SetFocus();
 }
 
 LPCTSTR CIamHereWindowWnd::GetWindowClassName() const 
@@ -26,33 +40,7 @@ void CIamHereWindowWnd::OnFinalMessage(HWND /*hWnd*/)
 	delete this; 
 };
 
-//动作处理
-void CIamHereWindowWnd::Notify(TNotifyUI& msg)
-{
-    //关闭按钮
-    if( msg.pSender->GetName() == _T("closeBtn") ) 
-	{
-		if( msg.sType == _T("click") ) //单击
-		{
-            Close();
-        }
-    }
-	
-	// 　searchBtn　按钮
-	if (msg.pSender->GetName() == _T("searchBtn") )
-	{
-		if (msg.sType == _T("click")) //单击
-		{
-			
-			CRichEditUI* pControl = static_cast<CRichEditUI*>(m_paintManager.FindControl(_T("rememberKey")));
-			pControl->GetText();
-			//MessageBox(NULL, pControl->GetText(), "HH", MB_OK);
-			CContainerUI* pCon = static_cast<CContainerUI *>(m_paintManager.FindControl(_T("rememberValue")));
-			pCon->SetText(pControl->GetText() + _T(" 哈哈"));
 
-		}
-	}
-}
 
 
 void CIamHereWindowWnd::InitNotify() //初始化托盘
@@ -82,22 +70,104 @@ void CIamHereWindowWnd::ShowOrHideWindow() //显示、隐藏窗口
 {
 	if (IsWindowVisible(this->m_hWnd))
 	{
-		//窗口可见，作隐藏
-		this->ShowWindow(false);
+		HWND f = GetFocus(); 
+		if (f != this->m_hWnd) 
+		{
+			//窗口被其它窗口挡住了，置前台
+			SetForegroundWindow(this->m_hWnd);//置前台	
+		}
+		else
+		{
+			//窗口可见，作隐藏
+			this->ShowWindow(false);
+			pControlValue->SetFocus();
+		}
 	}
 	else
 	{
 		//窗口不可见，作显示
-		SetForegroundWindow(this->m_hWnd);//置前台
 		this->ShowWindow(true);
+		SetForegroundWindow(this->m_hWnd);//置前台
+
+		pControlKey->SetFocus();
+		pControlKey->SetSelAll();
+	}
+}
+
+LRESULT CIamHereWindowWnd::DoSearch(void) //执行查找
+{
+	CStdString strKey = pControlKey->GetText();
+	if (strKey == _T("exit"))
+	{
+		this->Close();
+	}
+	pControlValue->SetText(strKey + _T(" 哈哈"));
+	return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//事件响应　路由
+void CIamHereWindowWnd::Notify(TNotifyUI& msg)
+{
+    //关闭按钮
+    if( msg.pSender->GetName() == _T("closeBtn") ) 
+	{
+		if( msg.sType == _T("click") ) //单击
+		{
+			OncloseBtnClick();
+        }
+    }
+	
+	// 　searchBtn　按钮
+	if (msg.pSender->GetName() == _T("searchBtn") )
+	{
+		if (msg.sType == _T("click")) //单击
+		{
+			OnSearchBtnClick();
+		}
+	}
+
+	// addBtn 按钮
+	if (msg.pSender->GetName() == _T("addBtn") )
+	{
+		if (msg.sType == _T("click"))
+		{
+			OnAddBtnClick();
+		}
+	}
+
+	// key 窗口
+	if (msg.pSender->GetName() == _T("rememberKey") )
+	{
+		if (msg.sType == _T("return"))
+		{
+			OnRememberKeyReturn();
+		}
+	}
+
+	//pasteBtn 粘贴
+	if (msg.pSender->GetName() == _T("pasteBtn") )
+	{
+		if (msg.sType == _T("click"))
+		{
+			OnPasteBtnClick();
+		}
+	}
+
+	//historyBtn
+	if (msg.pSender->GetName() == _T("historyBtn") )
+	{
+		if (msg.sType == _T("click"))
+		{
+			OnHistoryBtnClick();
+		}
 	}
 }
 
 
 
-
-
-//事件响应 路由
+//消息响应 路由
 LRESULT CIamHereWindowWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT lRes = 0;
@@ -135,8 +205,8 @@ LRESULT CIamHereWindowWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 	return CWindowWnd::HandleMessage(uMsg, wParam, lParam);
 }
 
-
-//事件响应
+/////////////////////////////////////////////////////////////////////////////////////////////
+//消息响应
 LRESULT CIamHereWindowWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	LONG styleValue = ::GetWindowLong(*this, GWL_STYLE);
@@ -152,17 +222,15 @@ LRESULT CIamHereWindowWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 
 	m_paintManager.AddNotifier(this);
 
-	//托盘
-	InitNotify();
-	InitHotKey();
+	Init();
 	return 0;
 }
 
 //关闭窗口
 LRESULT CIamHereWindowWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	//PostMessage(WM_DESTROY, wParam, lParam); //发送 WM_DESTROY 消息，销毁窗口 
-	ShowOrHideWindow();
+	PostMessage(WM_DESTROY, wParam, lParam); //发送 WM_DESTROY 消息，销毁窗口 
+	//ShowOrHideWindow();
 	return 0;
 }
 
@@ -234,12 +302,12 @@ LRESULT CIamHereWindowWnd::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 LRESULT CIamHereWindowWnd::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	SIZE szRoundCorner = m_paintManager.GetRoundCorner();
-	if( !::IsIconic(*this) && (szRoundCorner.cx != 0 || szRoundCorner.cy != 0) ) {
-		CRect rcWnd;
-		::GetWindowRect(*this, &rcWnd);
-		rcWnd.Offset(-rcWnd.left, -rcWnd.top);
-		rcWnd.right++; rcWnd.bottom++;
-		HRGN hRgn = ::CreateRoundRectRgn(rcWnd.left, rcWnd.top, rcWnd.right, rcWnd.bottom, szRoundCorner.cx, szRoundCorner.cy);
+	if( !::IsIconic(*this) && (szRoundCorner.cx != 0 || szRoundCorner.cy != 0) ) 
+	{
+		::GetWindowRect(*this, &m_rcWnd);
+		m_rcWnd.Offset(-m_rcWnd.left, -m_rcWnd.top);
+		m_rcWnd.right++; m_rcWnd.bottom++;
+		HRGN hRgn = ::CreateRoundRectRgn(m_rcWnd.left, m_rcWnd.top, m_rcWnd.right, m_rcWnd.bottom, szRoundCorner.cx, szRoundCorner.cy);
 		::SetWindowRgn(*this, hRgn, TRUE);
 		::DeleteObject(hRgn);
 	}
@@ -312,4 +380,52 @@ LRESULT CIamHereWindowWnd::OnShowTask(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		break;
 	}
 	return 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//事件响应
+LRESULT CIamHereWindowWnd::OncloseBtnClick()
+{
+	Close();
+	return 0;
+}
+
+LRESULT CIamHereWindowWnd::OnSearchBtnClick()
+{
+	return DoSearch();
+}
+
+LRESULT CIamHereWindowWnd::OnAddBtnClick()
+{
+	MessageBox(NULL, pControlValue->GetText(), "HH", MB_OK);
+	return 0;
+}
+
+LRESULT CIamHereWindowWnd::OnRememberKeyReturn()
+{
+	return DoSearch();
+}
+
+//操作系统粘贴板
+LRESULT CIamHereWindowWnd::OnPasteBtnClick(void)
+{
+	CStdString fromClipboard;
+	if ( OpenClipboard(this->m_hWnd) )
+	{
+		HANDLE hData = GetClipboardData(CF_TEXT);
+		char * buffer = (char*)GlobalLock(hData);
+		fromClipboard = buffer;
+		GlobalUnlock(hData);
+		CloseClipboard();
+	}
+	if (!fromClipboard.IsEmpty())
+	{
+		pControlKey->SetText(fromClipboard);
+	}
+	return 0;
+}
+
+LRESULT CIamHereWindowWnd::OnHistoryBtnClick(void)
+{
+	return DoSearch();
 }
