@@ -29,9 +29,6 @@ using namespace DuiLib;
 
 #define WM_SHOWTASK WM_USER + 779
 
-#include "IamHereWindowWnd.h"
-
-
 /*
 class CIamHereProxy 
 {

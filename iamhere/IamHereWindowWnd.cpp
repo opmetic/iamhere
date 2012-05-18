@@ -8,6 +8,7 @@ CIamHereWindowWnd::CIamHereWindowWnd(void)
 	m_size.cy = 450;
 }
 
+
 CIamHereWindowWnd::~CIamHereWindowWnd(void)
 {
 }
@@ -24,15 +25,6 @@ void CIamHereWindowWnd::Init()
 	pControlKey->SetFocus();
 }
 
-LPCTSTR CIamHereWindowWnd::GetWindowClassName() const 
-{ 
-	return _T(m_className); 
-};
-
-UINT CIamHereWindowWnd::GetClassStyle() const 
-{ 
-	return UI_CLASSSTYLE_FRAME | CS_DBLCLKS; 
-};
 
 //最后一个消息
 void CIamHereWindowWnd::OnFinalMessage(HWND /*hWnd*/) 
@@ -70,8 +62,8 @@ void CIamHereWindowWnd::ShowOrHideWindow() //显示、隐藏窗口
 {
 	if (IsWindowVisible(this->m_hWnd))
 	{
-		HWND f = GetFocus(); 
-		if (f != this->m_hWnd) 
+		HWND focusHWnd = GetFocus(); 
+		if (focusHWnd != this->m_hWnd) 
 		{
 			//窗口被其它窗口挡住了，置前台
 			SetForegroundWindow(this->m_hWnd);//置前台	
@@ -209,18 +201,7 @@ LRESULT CIamHereWindowWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 //消息响应
 LRESULT CIamHereWindowWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	LONG styleValue = ::GetWindowLong(*this, GWL_STYLE);
-	styleValue &= ~WS_CAPTION;
-	::SetWindowLong(*this, GWL_STYLE, styleValue | WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
-
-	m_paintManager.Init(m_hWnd);
-	CDialogBuilder builder;
-	CControlUI* pRoot = builder.Create(_T("skin.xml"), (UINT)0, NULL, &m_paintManager);
-	ASSERT(pRoot && "Failed to parse XML");
-	m_paintManager.AttachDialog(pRoot);
-
-
-	m_paintManager.AddNotifier(this);
+	CBaseWindowWnd::OnCreate(uMsg, wParam, lParam, bHandled);
 
 	Init();
 	return 0;

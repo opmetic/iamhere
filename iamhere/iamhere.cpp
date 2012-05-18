@@ -3,13 +3,16 @@
 #include "iamhere.h"
 #include "IamHereWindowWnd.h"
 
-CIamHereWindowWnd* pFrame = new CIamHereWindowWnd();
+
 
 // 程序入口及Duilib初始化部分
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*lpCmdLine*/, int nCmdShow)
 {
     CPaintManagerUI::SetInstance(hInstance);
     CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + _T("skin"));
+	
+	CIamHereWindowWnd* pFrame = new CIamHereWindowWnd();
+	pFrame->SetSkinName(_T("skin.xml"));
 
     if( pFrame == NULL ) 
 	{

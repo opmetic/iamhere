@@ -1,16 +1,16 @@
 #ifndef __IAMHEREWINDOWWND_H__
 #define __IAMHEREWINDOWWND_H__
 
-#include "iamhere.h"
+#include "BaseWindowWnd.h"
 
-class CIamHereWindowWnd : public CWindowWnd, public INotifyUI
+class CIamHereWindowWnd : public CBaseWindowWnd
 {
 public:
 	CIamHereWindowWnd(void);
+	CIamHereWindowWnd(CStdString skinName);
 	~CIamHereWindowWnd(void);
 	void Init();
-	LPCTSTR GetWindowClassName() const;
-	UINT GetClassStyle() const;
+	
 	void OnFinalMessage(HWND /*hWnd*/);
 	void Notify(TNotifyUI& msg);
 	LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -45,15 +45,12 @@ public:
 	
 
 public:
-	CPaintManagerUI m_paintManager; //窗口指针
-	CStdString m_className; //窗口类名
 	NOTIFYICONDATA m_nid;//托盘
 
 	CRichEditUI* pControlKey;
 	CRichEditUI* pControlValue;
 
-	CRect m_rcWnd; //本窗口矩形
-	CSize m_size; //本窗口大小
+	
 };
 
 
