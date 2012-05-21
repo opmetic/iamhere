@@ -8,6 +8,16 @@ CIamHereWindowWnd::CIamHereWindowWnd(void)
 	m_size.cy = 450;
 }
 
+CIamHereWindowWnd::CIamHereWindowWnd(CStdString skinName) 
+{
+	//构造函数
+	m_className = _T("CIamHereWindowWnd");
+	m_size.cx = 540;
+	m_size.cy = 450;
+
+	SetSkinName(skinName);
+}
+
 
 CIamHereWindowWnd::~CIamHereWindowWnd(void)
 {
@@ -393,10 +403,14 @@ LRESULT CIamHereWindowWnd::OnPasteBtnClick(void)
 	CStdString fromClipboard;
 	if ( OpenClipboard(this->m_hWnd) )
 	{
-		HANDLE hData = GetClipboardData(CF_TEXT);
-		char * buffer = (char*)GlobalLock(hData);
-		fromClipboard = buffer;
-		GlobalUnlock(hData);
+		if (IsClipboardFormatAvailable(CF_TEXT)) //查看粘贴板上是不是文本
+		{
+			HANDLE hData = GetClipboardData(CF_TEXT);
+			char * buffer = (char*)GlobalLock(hData);
+			fromClipboard = buffer;
+			GlobalUnlock(hData);
+		}
+
 		CloseClipboard();
 	}
 	if (!fromClipboard.IsEmpty())
