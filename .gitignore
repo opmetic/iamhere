@@ -1,0 +1,11 @@
+###############
+#  fixed file #
+###############
+*.ncb
+*.ilk
+*.obj
+*.dep
+*.idb
+*.manifest
+*.exe
+
