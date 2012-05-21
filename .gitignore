@@ -8,4 +8,7 @@
 *.idb
 *.manifest
 *.exe
+*.pdb
 
+
+/iamhere/Debug/
