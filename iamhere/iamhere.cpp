@@ -12,7 +12,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPSTR /*l
     CPaintManagerUI::SetResourcePath(CPaintManagerUI::GetInstancePath() + _T("skin"));
 	
 	CIamHereWindowWnd* pFrame = new CIamHereWindowWnd(_T("skin.xml"));
-	//pFrame->SetSkinName(_T("skin.xml"));
 
     if( pFrame == NULL ) 
 	{

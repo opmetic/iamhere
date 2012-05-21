@@ -3,7 +3,7 @@
 CIamHereWindowWnd::CIamHereWindowWnd(void)
 {
 	//构造函数
-	m_className = _T("CIamHereWindowWnd");
+	m_className = _T((typeid(*this)).name());
 	m_size.cx = 540;
 	m_size.cy = 450;
 }
@@ -11,7 +11,8 @@ CIamHereWindowWnd::CIamHereWindowWnd(void)
 CIamHereWindowWnd::CIamHereWindowWnd(CStdString skinName) 
 {
 	//构造函数
-	m_className = _T("CIamHereWindowWnd");
+	//m_className = _T("CIamHereWindowWnd");
+	m_className = _T((typeid(*this)).name());
 	m_size.cx = 540;
 	m_size.cy = 450;
 
@@ -36,14 +37,6 @@ void CIamHereWindowWnd::Init()
 }
 
 
-//最后一个消息
-void CIamHereWindowWnd::OnFinalMessage(HWND /*hWnd*/) 
-{ 
-	delete this; 
-};
-
-
-
 
 void CIamHereWindowWnd::InitNotify() //初始化托盘
 {
@@ -60,6 +53,7 @@ void CIamHereWindowWnd::InitNotify() //初始化托盘
 	}
 }
 
+//Alt + q 快键
 void CIamHereWindowWnd::InitHotKey() //初始化全局键盘hook
 {
 	if (!RegisterHotKey(this->m_hWnd, WM_HOTKEY, MOD_ALT, 'Q'))
@@ -211,58 +205,33 @@ LRESULT CIamHereWindowWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam
 //消息响应
 LRESULT CIamHereWindowWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	CBaseWindowWnd::OnCreate(uMsg, wParam, lParam, bHandled);
+	CBaseWindowWnd::OnCreate(uMsg, wParam, lParam, bHandled); //调用base类的其本操作
 
 	Init();
 	return 0;
 }
-
+/*
 //关闭窗口
 LRESULT CIamHereWindowWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	PostMessage(WM_DESTROY, wParam, lParam); //发送 WM_DESTROY 消息，销毁窗口 
-	//ShowOrHideWindow();
+	ShowOrHideWindow();
 	return 0;
-}
+}*/
 
 //销毁窗口，除出程序
 LRESULT CIamHereWindowWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	Shell_NotifyIcon(NIM_DELETE, &m_nid);//删除托盘图标
 	UnregisterHotKey(this->m_hWnd, WM_HOTKEY); //删除热键
-	::PostQuitMessage(0);
+	CBaseWindowWnd::OnDestroy(uMsg, wParam, lParam, bHandled); //调用base类的其本操作
 	return 0;
 }
 
-LRESULT CIamHereWindowWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	if( ::IsIconic(*this) )
-	{
-		//窗口未最小化
-		bHandled = FALSE;
-	}
 
-    return (wParam == 0) ? TRUE : FALSE;
 
-	/*
-	bHandled = false;
-	if( !::IsIconic(m_hWnd) ) 
-	{
-        return (wParam == 0) ? TRUE : FALSE;
-    }
-	return 0;
-	*/
-}
 
-LRESULT CIamHereWindowWnd::OnNcCalcSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	return 0;
-}
 
-LRESULT CIamHereWindowWnd::OnNcPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	return 0;
-}
+
 
 //实现拖动效果
 LRESULT CIamHereWindowWnd::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -289,55 +258,6 @@ LRESULT CIamHereWindowWnd::OnNcHitTest(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 	return HTCLIENT;
 }
 
-//窗口圆角处理
-LRESULT CIamHereWindowWnd::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	SIZE szRoundCorner = m_paintManager.GetRoundCorner();
-	if( !::IsIconic(*this) && (szRoundCorner.cx != 0 || szRoundCorner.cy != 0) ) 
-	{
-		::GetWindowRect(*this, &m_rcWnd);
-		m_rcWnd.Offset(-m_rcWnd.left, -m_rcWnd.top);
-		m_rcWnd.right++; m_rcWnd.bottom++;
-		HRGN hRgn = ::CreateRoundRectRgn(m_rcWnd.left, m_rcWnd.top, m_rcWnd.right, m_rcWnd.bottom, szRoundCorner.cx, szRoundCorner.cy);
-		::SetWindowRgn(*this, hRgn, TRUE);
-		::DeleteObject(hRgn);
-	}
-
-	bHandled = FALSE;
-	return 0;
-}
-
-LRESULT CIamHereWindowWnd::OnGetMinMaxInfo(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	return 0;
-}
-
-LRESULT CIamHereWindowWnd::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	// 有时会在收到WM_NCDESTROY后收到wParam为SC_CLOSE的WM_SYSCOMMAND
-    if( wParam == SC_CLOSE ) {
-        ::PostQuitMessage(0L);
-        bHandled = TRUE;
-        return 0;
-    }
-    BOOL bZoomed = ::IsZoomed(*this);
-    LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
-    if( ::IsZoomed(*this) != bZoomed ) {
-        if( !bZoomed ) {
-            CControlUI* pControl = static_cast<CControlUI*>(m_paintManager.FindControl(_T("maxbtn")));
-            if( pControl ) pControl->SetVisible(false);
-            pControl = static_cast<CControlUI*>(m_paintManager.FindControl(_T("restorebtn")));
-            if( pControl ) pControl->SetVisible(true);
-        }
-        else {
-            CControlUI* pControl = static_cast<CControlUI*>(m_paintManager.FindControl(_T("maxbtn")));
-            if( pControl ) pControl->SetVisible(true);
-            pControl = static_cast<CControlUI*>(m_paintManager.FindControl(_T("restorebtn")));
-            if( pControl ) pControl->SetVisible(false);
-        }
-    }
-    return lRes;
-}
 
 //空响应用户双击动作，去除双击标题栏是窗口最大化功能
 LRESULT CIamHereWindowWnd::OnNcLButtonDBLclk(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
@@ -422,5 +342,13 @@ LRESULT CIamHereWindowWnd::OnPasteBtnClick(void)
 
 LRESULT CIamHereWindowWnd::OnHistoryBtnClick(void)
 {
-	return DoSearch();
+	CIamHereWindowWnd* pFrame = new CIamHereWindowWnd(_T("messageBox.xml"));
+
+    if( pFrame == NULL ) 
+	{
+		return 0;
+	}
+    pFrame->Create(NULL, _T("提示"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
+    pFrame->ShowWindow(true);
+	return 0;
 }
