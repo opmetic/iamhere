@@ -168,11 +168,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Control.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ErrorCode.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\iamhere.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\IamHereWindowWnd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MsgBox.cpp"
 				>
 			</File>
 		</Filter>
@@ -186,11 +198,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Control.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ErrorCode.h"
+				>
+			</File>
+			<File
 				RelativePath=".\iamhere.h"
 				>
 			</File>
 			<File
 				RelativePath=".\IamHereWindowWnd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MsgBox.h"
 				>
 			</File>
 		</Filter>

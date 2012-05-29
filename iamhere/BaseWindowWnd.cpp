@@ -4,6 +4,7 @@ CBaseWindowWnd::CBaseWindowWnd(void)
 {
 	SetLocalStyleValue(WS_CLIPSIBLINGS | WS_CLIPCHILDREN);
 	m_className = _T((typeid(*this)).name());
+	m_indexWnd = 0;
 }
 
 
@@ -56,7 +57,6 @@ void CBaseWindowWnd::OnFinalMessage(HWND /*hWnd*/)
 	delete this; 
 }
 
-
 //消息响应
 LRESULT CBaseWindowWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
@@ -68,7 +68,7 @@ LRESULT CBaseWindowWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
 	CDialogBuilder builder;
 	CControlUI* pRoot = builder.Create(_T(this->m_skinName.GetData()), (UINT)0, NULL, &m_paintManager);
 
-	ASSERT(pRoot && "Failed to parse XML");
+	ASSERT(pRoot && "解析XML皮肤文件失败");
 
 	m_paintManager.AttachDialog(pRoot);
 

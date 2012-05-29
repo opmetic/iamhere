@@ -1,4 +1,7 @@
 #include "IamHereWindowWnd.h"
+#include "Control.h"
+
+extern CControl * pControl;
 
 CIamHereWindowWnd::CIamHereWindowWnd(void)
 {
@@ -8,7 +11,7 @@ CIamHereWindowWnd::CIamHereWindowWnd(void)
 	m_size.cy = 450;
 }
 
-CIamHereWindowWnd::CIamHereWindowWnd(CStdString skinName) 
+CIamHereWindowWnd::CIamHereWindowWnd(CStdString skinName, int indexWnd) 
 {
 	//构造函数
 	//m_className = _T("CIamHereWindowWnd");
@@ -17,6 +20,8 @@ CIamHereWindowWnd::CIamHereWindowWnd(CStdString skinName)
 	m_size.cy = 450;
 
 	SetSkinName(skinName);
+
+	m_indexWnd = indexWnd;
 }
 
 
@@ -71,11 +76,13 @@ void CIamHereWindowWnd::ShowOrHideWindow() //显示、隐藏窗口
 		{
 			//窗口被其它窗口挡住了，置前台
 			SetForegroundWindow(this->m_hWnd);//置前台	
+			SendMC(MOD_UI, ACT_SHOW_ALL_WIN, 0, NULL, NULL);//通告其它窗口显示
 		}
 		else
 		{
 			//窗口可见，作隐藏
 			this->ShowWindow(false);
+			SendMC(MOD_UI, ACT_HIDE_ALL_WIN, 0, NULL, NULL);//通告其它窗口隐藏
 			pControlValue->SetFocus();
 		}
 	}
@@ -84,6 +91,7 @@ void CIamHereWindowWnd::ShowOrHideWindow() //显示、隐藏窗口
 		//窗口不可见，作显示
 		this->ShowWindow(true);
 		SetForegroundWindow(this->m_hWnd);//置前台
+		SendMC(MOD_UI, ACT_SHOW_ALL_WIN, 0, NULL, NULL);//通告其它窗口显示
 
 		pControlKey->SetFocus();
 		pControlKey->SetSelAll();
@@ -306,9 +314,10 @@ LRESULT CIamHereWindowWnd::OnSearchBtnClick()
 	return DoSearch();
 }
 
-LRESULT CIamHereWindowWnd::OnAddBtnClick()
+LRESULT CIamHereWindowWnd::OnAddBtnClick() //增加按钮
 {
-	MessageBox(NULL, pControlValue->GetText(), "HH", MB_OK);
+	//MessageBox(NULL, pControlValue->GetText(), "HH", MB_OK);
+	MsgBox(pControlValue->GetText());
 	return 0;
 }
 
@@ -342,13 +351,6 @@ LRESULT CIamHereWindowWnd::OnPasteBtnClick(void)
 
 LRESULT CIamHereWindowWnd::OnHistoryBtnClick(void)
 {
-	CIamHereWindowWnd* pFrame = new CIamHereWindowWnd(_T("messageBox.xml"));
-
-    if( pFrame == NULL ) 
-	{
-		return 0;
-	}
-    pFrame->Create(NULL, _T("提示"), UI_WNDSTYLE_FRAME, WS_EX_WINDOWEDGE);
-    pFrame->ShowWindow(true);
+	
 	return 0;
 }

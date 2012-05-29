@@ -7,7 +7,7 @@ class CIamHereWindowWnd : public CBaseWindowWnd
 {
 public:
 	CIamHereWindowWnd(void);
-	CIamHereWindowWnd(CStdString skinName);
+	CIamHereWindowWnd(CStdString skinName, int indexWnd);
 	~CIamHereWindowWnd(void);
 	void Init();
 	

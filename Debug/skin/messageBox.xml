@@ -1,32 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Window mininfo="540,450" size="300,200 " sizebox="5,5,5,5" caption="0,0,0,450" bktrans="true" alpha="245" roundcorner="5,5" >
-  <Font name="幼圆" size="22" bold="false" />
+<Window mininfo="300,200" size="300,200" sizebox="5,5,5,5" caption="0,0,0,450" bktrans="true" alpha="255" roundcorner="10,10" >
+  <Font name="幼圆" size="18" bold="false" />
   <Font name="宋体" size="16" bold="false" />
   <Font name="宋体" size="12" />
   <Font name="宋体" size="12" bold="false" />
   <Font name="宋体" size="12" bold="true"/>
   <Font name="宋体" size="12" />
   <Font name="幼圆" size="16" default="true" />
-  <VerticalLayout bkcolor="#FFFFFFFF" inset="5,5,5,5" height="450" bkimage="file='iamhere.png'" borderround="5,5">
-    <HorizontalLayout height="25" inset="0,0,0,0">  <!-- 头部关系按钮 -->
-      <Button name="closeBtn" float="true" pos="505,0,530,25" bordersize="0" bkimage="file='closebtn.png'" hotimage="file='closebtn2.png'"/>
-    </HorizontalLayout>
-    <HorizontalLayout height="50" inset="0,0,0,5"> <!-- 查找栏 -->
-      <VerticalLayout width="21">
-        <Button name="pasteBtn" tooltip="粘贴" width="20" height="22" bkcolor="#00ffffff" bkcolor2="#aaffff00" bkcolor3="#00ffffff" borderround="2,2"/>
-        <Button name="historyBtn" tooltip="记录" width="20" height="22" bkcolor="#00ffffff" bkcolor2="#aa00ff00" bkcolor3="#00ffffff" borderround="2,2" padding="0,1,0,0"/>
-      </VerticalLayout>
-      <RichEdit padding="0,0,0,0" inset="5,10,5,0" wantreturn="false" name="rememberKey" width="434" text=""  borderround="2,2" font="0" bkcolor="#00ffffff" bkcolor2="#aaffffff" bkcolor3="#00ffffff" nativebkcolor="#ffcccc99" rich="true"></RichEdit>
-      <Button name="searchBtn" height="45" width="45" padding="5,0,0,0" bordersize="0" bkimage="file='search.png'" hotimage="file='search2.png'"/>
-    </HorizontalLayout>
-    <HorizontalLayout height="345" inset="0,0,0,0"> <!-- 主区 -->
-      <RichEdit name="rememberValue" inset="5,5,0,5" bordercolor="#FF0000" bordersize="0" borderround="2,2" transparent="true" bkcolor="#30ffffff" bkcolor2="#00ffffff" bkcolor3="#30ffffff" font="1" multiline="true" vscrollbar="true" autovscroll="true" enabled="true" rich="true" readonly="false" text="">
-      </RichEdit>
-    </HorizontalLayout>
-    <HorizontalLayout height="20" inset="0,5,0,0">
-      <Label text="总收录条数:" font="3" width="70"></Label>
-      <Label name="info" text="100" font="4" width="420"></Label>
-      <Button name="addBtn" text="新增" font="4" align="center" width="40" bkcolor="#00ffffff" bkcolor2="#aaffffff" bkcolor3="#00ffffff" borderround="2,2"></Button>
-    </HorizontalLayout>
+  <VerticalLayout bkcolor="#ffffffff" inset="5,10,5,20" height="200" bkimage="file='iamhere.png'" borderround="10,10">
+    <Button name="closeBtn" text="" font="4" align="left" width="20" height="20" bkcolor="#00ffffff" bkcolor2="#aaff0000" bkcolor3="#00ffffff" borderround="20,20"></Button>
+    <Text name="msgArea" height="145" font="0" textpadding="5,5,5,5" padding="0,5,5,5" bkcolor="#00ffffff" bkcolor2="#aa00ff00" bkcolor3="#00ffffff" borderround="10,10" enabled="true" mouse="true"></Text>
   </VerticalLayout>
 </Window>

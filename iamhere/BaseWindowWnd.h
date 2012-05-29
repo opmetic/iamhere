@@ -34,6 +34,7 @@ public:
 	CStdString m_skinName; //界面样式文件名
 	LONG m_localStyleValue; //窗口样式
 	CPaintManagerUI m_paintManager; //窗口指针
+	int m_indexWnd; //窗口唯一标识
 };
 
 #endif // __BASEWINDOWWND_H__
